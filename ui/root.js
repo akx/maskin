@@ -3,9 +3,16 @@ var Tone = require("Tone");
 var m = require("mithril");
 var _ = require("lodash");
 var Sequencer = require("../core/Sequencer");
+var Synth = require("../core/Synth");
 var seqComponent = require("./seq-ui");
 var actionComponent = require("./action-ui");
 var synthComponent = require("./synth-ui");
+
+function remove(array, val) {
+    var index = array.indexOf(val);
+    if(index > -1) array.splice(index, 1);
+    return array;
+}
 
 var UI = {
     controller: function () {
@@ -14,25 +21,39 @@ var UI = {
         this.synths = [];
         this.seqMap = {};
         this.stepActionMap = {};
+        this.routeDests = [];
 
         this.addAction = (action) => {
             this.actions.push(action);
             this.updateMaps();
         };
         this.delAction = (action) => {
-            var index = this.actions.indexOf(action);
-            if(index > -1) this.actions.splice(index, 1);
+            remove(this.actions, action);
             this.updateMaps();
         };
+        
         this.addSeq = (seq) => {
             this.seqs.push(seq);
             this.updateMaps();
         };
         this.delSeq = (seq) => {
-            var index = this.seqs.indexOf(seq);
-            if(index > -1) this.seqs.splice(index, 1);
+            remove(this.seqs, seq);
             this.updateMaps();
         };
+        this.delRoute = (seq, route) => {
+            remove(seq.routes, route);
+        };
+        
+        
+        this.addSynth = (synth) => {
+            this.synths.push(synth);
+            this.updateMaps();
+        };
+        this.delSynth = (synth) => {
+            remove(this.synths, synth);
+            this.updateMaps();
+        };        
+        
         this.updateMaps = () => {
             this.seqMap = _.reduce(this.seqs, (map, seq) => {
                 map[seq.id] = seq;
@@ -45,7 +66,16 @@ var UI = {
                 }
                 return map;
             }, {rx: {}, tx: {}});
+            var routeDests = [];
+            this.synths.forEach((synth) => {
+                synth.dests.forEach((dest) => {
+                    routeDests.push([synth.id + "/" + dest, synth.name + "/" + dest]);
+                });
+            });
+            this.routeDests = routeDests;
         };
+
+        this.updateMaps();
     },
     view: function(ctrl) {
         return m("div#ui", [
@@ -62,7 +92,12 @@ var UI = {
                 m("div#seqlist", ctrl.seqs.map(_.partial(seqComponent, ctrl)))
             ]),
             m("div#actions", ctrl.actions.map(_.partial(actionComponent, ctrl))),
-            m("div#synths", ctrl.synths.map(_.partial(synthComponent, ctrl))),
+            m("div#synths", [
+                m("div.toolbar", [
+                    m("button", {onclick: () => {ctrl.addSynth(new Synth());}}, "new synth"),
+                ]),
+                m("div#synthlist", ctrl.synths.map(_.partial(synthComponent, ctrl)))
+            ]),
         ]);
     }
 };

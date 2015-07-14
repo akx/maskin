@@ -7,15 +7,22 @@ function actionComponent(ctrl, action) {
     var fromSeq = ctrl.seqMap[action.fromSeqId];
     var toSeq = ctrl.seqMap[action.toSeqId];
     return m("div.action", {key: action.id}, [
-        m("input", {
-            type: "checkbox", checked: !!action.active, onclick: () => {
-                action.active = !action.active;
-            }
-        }),
-        m("span", [
-            fromSeq.name, "/", action.fromStep, " => ",
-            toSeq.name, "/", action.toStep
-        ].join("")),
+        m("div", [
+            m("input", {
+                type: "checkbox", checked: !!action.active, onclick: () => {
+                    action.active = !action.active;
+                }
+            }),
+            m("span", [
+                fromSeq.name, "/", action.fromStep, " => ",
+                toSeq.name, "/", action.toStep
+            ].join("")),
+            m("button", {
+                onclick: () => {
+                    ctrl.delAction(action);
+                }
+            }, "del")
+        ]),
         m("div", [
             m("label", [
                 m("input", {
@@ -39,11 +46,6 @@ function actionComponent(ctrl, action) {
                 action.action = e.target.value;
             }
         }, Action.actions),
-        m("button", {
-            onclick: () => {
-                ctrl.delAction(action);
-            }
-        }, "del")
     ]);
 }
 

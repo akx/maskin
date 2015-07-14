@@ -50,6 +50,11 @@ action("seq clear", function(ns) {
     ns.toSeq.clear();
 });
 
+action("seq shift", function(ns) {
+    ns.toSeq.shift();
+});
+
+
 function makeChoiceActions(prefix, attr, choices) {
     choices.forEach((value) => {
         action(prefix + " " + value, (ns) => { ns.toSeq[attr] = value; });

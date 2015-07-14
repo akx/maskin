@@ -16,7 +16,8 @@ class Action {
         this.prob = 100;
     }
 
-    run(seqMap) {
+    run(maps) {
+        var seqMap = maps.seqs;
         if(!this.active) return;
         var actionFunc = actions[this.action];
         if(!actionFunc) return;

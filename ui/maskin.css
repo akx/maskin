@@ -18,7 +18,6 @@ body {
 
 #seqs, #actions, #synths {
     flex: 1;
-    border: 1px solid orange;
 }
 
 #seqs {

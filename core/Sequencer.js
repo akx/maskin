@@ -50,18 +50,15 @@ class Sequencer {
         this.scale = ScaleMaker.makeScale(this.scaleName, this.scaleRoot + this.scaleOctave, this.scaleWidth);
     }
 
-    tick() {
+    tick(maps) {
         if(!this.run) return;
         var curStep = this.steps[this.position];
         if(this._trigger && curStep && curStep.value) {
             this._trigger = false;
-            this.routes.map((route) => {
-                if(route.triggerAttackRelease) {
-                    var scaleHz = this.scale.inHertz;
-                    var noteHz = scaleHz[(0 | Math.round(curStep.value * scaleHz.length)) % scaleHz.length];
-                    route.triggerAttackRelease(noteHz, 0.1);
-                }
-            });
+            var scaleHz = this.scale.inHertz;
+            var value = curStep.value;
+            var noteHz = scaleHz[(0 | Math.round(value * scaleHz.length)) % scaleHz.length];
+            _.invoke(this.routes, "run", maps, {value: value, noteHz: noteHz});
         }
         this._move ++;
         if(this._move < this.speed) return;
@@ -116,10 +113,21 @@ class Sequencer {
         this.steps.forEach((s) => {s.value = 0;});
     }
 
+    shift(times=1, left=false) {
+        var steps = this.steps;
+        for(var i = 0; i < times; i++) {
+            if(left) {
+                steps.push(steps.shift());
+            } else {
+                steps.unshift(steps.pop());
+            }
+        }
+    }
+
 
 }
 
-Sequencer.scaleNames = ScaleMaker.getScaleNames();
+Sequencer.scaleNames = ScaleMaker.getScaleNames().sort();
 Sequencer.scaleRoots = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 Sequencer.wrapTypes = consts.seqWrapTypes;
 Sequencer.modes = consts.seqModes;

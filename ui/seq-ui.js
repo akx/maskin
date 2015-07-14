@@ -3,6 +3,8 @@ var _ = require("lodash");
 var Sequencer = require("../core/Sequencer");
 var {select} = require("./uitools");
 var stepComponent = require("./step-ui");
+var routeComponent = require("./route-ui");
+var Route = require("../core/Route");
 
 function rectify(stepComps) {
     var s = 0 | Math.sqrt(stepComps.length), out = [];
@@ -16,9 +18,6 @@ function rectify(stepComps) {
 }
 
 function seqComponent(ctrl, seq) {
-    var stepComps = seq.steps.map(_.partial(stepComponent, ctrl, seq));
-    if(seq.view == "rect") stepComps = rectify(stepComps);
-
     var content = [
         m("div", [
             m("input", {title: "ui", type: "checkbox", checked: !!seq.ui, onclick: () => {seq.ui = !seq.ui;}}),
@@ -26,12 +25,16 @@ function seqComponent(ctrl, seq) {
         ])
     ];
     if(seq.ui) {
+        var stepComps = seq.steps.map(_.partial(stepComponent, ctrl, seq));
+        if(seq.view == "rect") stepComps = rectify(stepComps);
+        var routeComps = seq.routes.map(_.partial(routeComponent, ctrl, seq));
         content = content.concat([
             m("div.toolbar", [
                 m("button", {onclick: () => {seq.reset();}}, "reset"),
                 m("button", {onclick: () => {seq.randomize();}}, "rand"),
                 m("button", {onclick: () => {seq.clear();}}, "clr"),
-                m("button", {onclick: (e) => {if(e.ctrlKey) ctrl.delSeq(seq);}}, "del"),
+                m("button", {onclick: (e) => {seq.routes.push(new Route());}}, "+route"),
+                m("button", {onclick: (e) => {if(e.ctrlKey) ctrl.delSeq(seq);}, title: "hold ctrl for safety"}, "del"),
             ]),
             m("div", [
                 m("input", {title: "steps", type: "number", value: seq.nSteps, min: 1, max: 1024, oninput: (e) => {seq.setNSteps(e.target.value);}}),
@@ -48,6 +51,7 @@ function seqComponent(ctrl, seq) {
                 m("input", {type: "number", value: seq.scaleOctave, min: 0, max: 16, oninput: (e) => {seq.scaleOctave = 0 | e.target.value; seq.refreshScale();}}),
                 m("input", {type: "number", value: seq.scaleWidth, min: 2, max: 64, oninput: (e) => {seq.scaleWidth = 0 | e.target.value; seq.refreshScale();}})
             ]),
+            m("div.routes", routeComps),
             m("div.steps", stepComps)
         ]);
     }
