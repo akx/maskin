@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack",
+    "release": "webpack -p",
     "watch": "webpack --progress --watch",
     "lint": "eslint ui core"
   },
