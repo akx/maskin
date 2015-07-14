@@ -1,0 +1,71 @@
+* {
+    box-sizing: border-box;
+    font: 14pt consolas, monaco, monospace;
+    user-select: none;
+}
+
+body {
+    background: #333;
+    color: #fff;
+
+}
+
+input, select, button {
+    background: transparent;
+    color: inherit;
+    border: 1px solid #888;
+    margin: 4px;
+}
+
+option {
+    background: #aaa;
+    color: #000;
+}
+
+.step {
+    display: inline-block;
+    position: relative;
+    width: 32px;
+    height: 32px;
+    border: 3px solid #888;
+    background: #000;
+    margin: 8px;
+    cursor: pointer;
+}
+
+.step.div {
+    background: #411;
+}
+
+.step:hover {
+    border-color: #aaa;
+}
+
+.step.current {
+    border-color: #dbff51 !important;
+}
+
+.step.lit {
+    background: #dbff51;
+}
+
+.step.tx {
+    border-top-color: red !important;
+}
+
+.step.rx {
+    border-bottom-color: red !important;
+}
+
+.handle {
+    background: white;
+    opacity: 0.2;
+    position: relative;
+    left: -6px;
+    top: -6px;
+    width: 38px;
+    height: 8px;
+    cursor: move;
+}
+
+.handle:hover {opacity: 1}
