@@ -24,5 +24,5 @@ export function ignition() {
     }, "16n");
 
     Tone.Transport.start();
-};
+}
 

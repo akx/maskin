@@ -1,6 +1,7 @@
 var _ = require("lodash");
 var gobble = require("./gobbledygook");
 var Tone = require("Tone");
+var audio = require("./audio");
 
 class Synth {
     constructor() {
@@ -18,7 +19,7 @@ class Synth {
             "detune"
         ];
         this.synth = new Tone.MonoSynth();
-        this.synth.toMaster();
+        this.synth.connect(audio.master);
         this.trigger("cutoffMin", {value: 50000});
         this.trigger("cutoffMax", {value: 50000});
     }

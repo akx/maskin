@@ -2,6 +2,19 @@ var m = require("mithril");
 
 var {select} = require("./uitools");
 
+function labeledNumberInput(label, obj, path) {
+    return m("label", [
+        label, m("input", {
+            step: 0.01,
+            type: "number",
+            value: _.get(obj, path),
+            oninput: (e) => {
+                _.set(obj, path, e.target.valueAsNumber);
+            }
+        })
+    ]);
+}
+
 function synthComponent(ctrl, synth) {
     return m("div", [
         m("div", [
@@ -25,24 +38,13 @@ function synthComponent(ctrl, synth) {
             }
         }, ["lowpass", "highpass", "bandpass", "lowshelf", "highshelf", "notch", "allpass", "peaking"]),
         m("div", [
-            m("label", [
-                "attack", m("input", {
-                    type: "number",
-                    value: synth.synth.envelope.attack,
-                    oninput: (e) => {
-                        synth.synth.envelope.attack = e.target.valueAsNumber;
-                    },
-                })
-            ]),
-            m("label", [
-                "release", m("input", {
-                    type: "number",
-                    value: synth.synth.envelope.release,
-                    oninput: (e) => {
-                        synth.synth.envelope.release = e.target.valueAsNumber;
-                    },
-                })
-            ]),
+            labeledNumberInput("attack", synth, "synth.envelope.attack"),
+            labeledNumberInput("release", synth, "synth.envelope.release"),
+            labeledNumberInput("filterAttack", synth, "synth.filterEnvelope.attack"),
+            labeledNumberInput("filterRelease", synth, "synth.filterEnvelope.release"),
+            labeledNumberInput("cutoffMin", synth, "synth.filterEnvelope.min"),
+            labeledNumberInput("cutoffMax", synth, "synth.filterEnvelope.max"),
+            labeledNumberInput("detune", synth, "synth.detune.value"),
         ])
 
     ]);
