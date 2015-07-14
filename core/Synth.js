@@ -12,7 +12,10 @@ class Synth {
             "volume",
             "cutoffMin",
             "cutoffMax",
-            "resonance"
+            "resonance",
+            "attack",
+            "release",
+            "detune"
         ];
         this.synth = new Tone.MonoSynth();
         this.synth.toMaster();
@@ -22,6 +25,7 @@ class Synth {
 
     trigger(dest, data) {
         if(!this.active) return;
+        if(!this.synth) return;
         switch(dest) {
             case "note":
                 if(data.value > 0.05) {
@@ -37,7 +41,23 @@ class Synth {
             case "resonance":
                 if(data.value !== null) this.synth.filter.Q.value = data.value;
                 break;
+            case "attack":
+                if(data.value !== null) this.synth.envelope.attack = data.value;
+                break;
+            case "release":
+                if(data.value !== null) this.synth.envelope.release = data.value;
+                break;
+            case "detune":
+                if(data.value !== null) this.synth.detune.value = data.value;
+                break;
         }
+    }
+
+    dispose() {
+        if(this.synth && this.synth.dispose) {
+            this.synth.dispose();
+        }
+        if(this.synth) this.synth = null;
     }
 }
 

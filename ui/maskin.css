@@ -82,3 +82,5 @@ option {
 }
 
 .handle:hover {opacity: 1}
+
+label {display: block}

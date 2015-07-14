@@ -10,7 +10,10 @@ var synthComponent = require("./synth-ui");
 
 function remove(array, val) {
     var index = array.indexOf(val);
-    if(index > -1) array.splice(index, 1);
+    if(index > -1) {
+        array.splice(index, 1);
+        if(val.dispose) val.dispose();
+    }
     return array;
 }
 

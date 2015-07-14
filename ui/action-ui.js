@@ -32,6 +32,7 @@ function actionComponent(ctrl, action) {
                 }),
                 "cond."
             ]),
+            " - ",
             m("label", [
                 "prob:",
                 m("input", {
