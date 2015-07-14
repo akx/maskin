@@ -1,0 +1,22 @@
+{
+  "rules": {
+    "indent": [2, 4],
+    "quotes": [2, "double"],
+    "linebreak-style": [2, "unix"],
+    "semi": [2, "always"],
+    "comma-dangle": 0,
+    "curly": 0,
+    "semi-spacing": 0,
+    "no-extra-semi": 0,
+    "eqeqeq": 0,
+    "no-underscore-dangle": 0,
+  },
+  "env": {
+    "es6": true,
+    "node": true,
+    "browser": true
+  },
+  "ecmaFeatures": {
+    "modules": true
+  }
+}

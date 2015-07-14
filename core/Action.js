@@ -1,8 +1,10 @@
 var actions = require("./actions");
+var gobble = require("./gobbledygook");
+var _ = require("lodash");
 
 class Action {
     constructor(fromSeqId, fromStep, toSeqId, toStep) {
-        this.id = (Math.random() * 70000000).toString(36);
+        this.id = gobble(16);
         this.fromSeqId = fromSeqId;
         this.fromStep = fromStep;
         this.toSeqId = toSeqId;
@@ -10,6 +12,8 @@ class Action {
         this.active = true;
         this.cond = true;
         this.action = "";
+        this.param = "";
+        this.prob = 100;
     }
 
     run(seqMap) {
@@ -21,9 +25,10 @@ class Action {
         if(!(fromSeq && toSeq)) return;
         if(fromSeq.position != this.fromStep) return;
         var fromStep = fromSeq.steps[this.fromStep];
-        if(this.cond && !fromStep.value) return;
+        if(this.cond && fromStep.value < 0.05) return;
+        if(Math.random() * 100 >= this.prob) return;
         var toStep = toSeq.steps[this.toStep];
-        return actionFunc.call(this, {
+        actionFunc.call(this, {
             fromSeq: fromSeq,
             fromStep: fromStep,
             toSeq: toSeq,

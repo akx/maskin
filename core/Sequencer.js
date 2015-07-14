@@ -1,10 +1,11 @@
-var _ = require("lodash");
 var gobble = require("./gobbledygook");
-var ScaleMaker = require('scale-maker');
+var ScaleMaker = require("scale-maker");
+var consts = require("./consts");
 
 class Sequencer {
     constructor(nSteps=16) {
-        this.id = (Math.random() * 70000000).toString(36);
+        this.id = gobble(16);
+        this.ui = true;
         this.name = gobble(8);
         this.run = true;
         this.speed = 1;
@@ -14,6 +15,7 @@ class Sequencer {
         this.direction = +1;
         this.stride = 1;
         this.wrap = "wrap";
+        this.mode = "walk";
         this.view = "linear";
         this.routes = [];
         this.scaleName = "major";
@@ -64,8 +66,18 @@ class Sequencer {
         this._move ++;
         if(this._move < this.speed) return;
         this._move = 0;
-        this.position += this.direction * this.stride;
-        this._trigger = true;
+        var lastPosition = this.position;
+        var newPosition = lastPosition;
+        switch(this.mode) {
+            case "random":
+                newPosition = 0 | (Math.random() * this.steps.length);
+                break;
+            default:
+                newPosition += this.direction * this.stride;
+                break;
+        }
+        this._trigger = (newPosition != lastPosition);
+        this.position = newPosition;
 
 
         if(this.position < 0 || this.position >= this.steps.length) this.handleWrap();
@@ -109,6 +121,7 @@ class Sequencer {
 
 Sequencer.scaleNames = ScaleMaker.getScaleNames();
 Sequencer.scaleRoots = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-Sequencer.wrapTypes = ["wrap", "bounce"];
+Sequencer.wrapTypes = consts.seqWrapTypes;
+Sequencer.modes = consts.seqModes;
 
 export default Sequencer;
