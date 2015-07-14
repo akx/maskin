@@ -2,6 +2,14 @@ var cx = require("classnames");
 var m = require("mithril");
 var _ = require("lodash");
 var {select} = require("./uitools");
+var scaleUi = require("./scale-ui");
+
+function minMaxUi(ctrl, seq, route) {
+    return m("span", [
+        m("input", {type: "number", value: route.minValue, oninput: (e) => {route.minValue = e.target.valueAsNumber;}}),
+        m("input", {type: "number", value: route.maxValue, oninput: (e) => {route.maxValue = e.target.valueAsNumber;}}),
+    ]);
+}
 
 function routeComponent(ctrl, seq, route) {
     var key = seq.id + "-" + route.id;
@@ -22,8 +30,7 @@ function routeComponent(ctrl, seq, route) {
             route.synthId = synthId;
             route.destName = destName;
         }}, routeDests),
-        m("input", {type: "number", value: route.minValue, oninput: (e) => {route.minValue = e.target.valueAsNumber;}}),
-        m("input", {type: "number", value: route.maxValue, oninput: (e) => {route.maxValue = e.target.valueAsNumber;}}),
+        (currentDest ? (route.destName == "note" ? scaleUi(ctrl, seq) : minMaxUi(ctrl, seq, route)) : null),
         m("button", {onclick: (e) => {ctrl.delRoute(seq, route);}}, "del")
     ]);
 };

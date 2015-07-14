@@ -123,13 +123,6 @@ class Sequencer {
             }
         }
     }
-
-
 }
-
-Sequencer.scaleNames = ScaleMaker.getScaleNames().sort();
-Sequencer.scaleRoots = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-Sequencer.wrapTypes = consts.seqWrapTypes;
-Sequencer.modes = consts.seqModes;
 
 export default Sequencer;

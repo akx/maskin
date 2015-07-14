@@ -46,6 +46,10 @@ option {
     cursor: pointer;
 }
 
+.step.tall {
+    height: 128px;
+}
+
 .step.div {
     background: #411;
 }

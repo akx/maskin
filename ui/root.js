@@ -88,7 +88,7 @@ var UI = {
                         type: "number", min: 10, max: 600, value: Tone.Transport.bpm.value,
                         oninput: (e) => {Tone.Transport.bpm.value = 0 | e.target.value; },
                     }),
-                    m("button", {onclick: () => {ctrl.addSeq(new Sequencer(16));}}, "new seq"),
+                    m("button", {onclick: () => {ctrl.addSeq(new Sequencer(16));}}, "+seq"),
                     m("button", {onclick: () => {_.invoke(ctrl.seqs, "reset");}}, "reset all"),
                     m("button", {onclick: () => {ctrl.seqs.forEach((s) => {s.ui = false;});}}, "collapse all")
                 ]),
@@ -97,7 +97,7 @@ var UI = {
             m("div#actions", ctrl.actions.map(_.partial(actionComponent, ctrl))),
             m("div#synths", [
                 m("div.toolbar", [
-                    m("button", {onclick: () => {ctrl.addSynth(new Synth());}}, "new synth"),
+                    m("button", {onclick: () => {ctrl.addSynth(new Synth());}}, "+synth"),
                 ]),
                 m("div#synthlist", ctrl.synths.map(_.partial(synthComponent, ctrl)))
             ]),

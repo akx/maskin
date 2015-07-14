@@ -1,17 +1,16 @@
-
 var cx = require("classnames");
 var m = require("mithril");
-var Color = require("color");
 var Action = require("../core/Action");
 var _ = require("lodash");
 
-let stepColors = _.range(0, 101).map((val) => {
-    return Color("#dbff51").alpha(Math.sqrt(val / 100).toFixed(3)).rgbString(); // eslint-disable-line new-cap
+let stepBackgrounds = _.range(0, 101).map((val) => {
+    val = 100 - val;
+    var val1 = val + 1;
+    return "linear-gradient(transparent " + val + "%, #dbff51 " + val1 + "%, #dbff51 100%)";
 });
 
 function stepComponent(ctrl, seq, stepData, step) {
     var key = seq.id + "-" + step;
-    var color = stepData.value > 0.05 ? stepColors[Math.min(100, Math.round(stepData.value * 100))] : null;
     var props = {
         key: key,
         ondragover: (e) => {
@@ -28,6 +27,7 @@ function stepComponent(ctrl, seq, stepData, step) {
             }
         },
         className: cx({
+            tall: (seq.view == "tall"),
             current: (step == seq.position),
             div: (step % 4 == 0),
             rx: !!ctrl.stepActionMap.rx[key],
@@ -35,8 +35,8 @@ function stepComponent(ctrl, seq, stepData, step) {
         }),
         oncontextmenu: () => false,
         onmousedown: (e) => {
-            if(e.currentTarget != e.target) return;
-            if(e.button == 2) {
+            if (e.currentTarget != e.target) return;
+            if (e.button == 2) {
                 stepData.value = (stepData.value > 0.05 ? 0 : 1);
                 e.preventDefault();
                 stepData.manip = false;
@@ -52,11 +52,19 @@ function stepComponent(ctrl, seq, stepData, step) {
             stepData.manip = false;
         },
         onmousemove: (e) => {
-            if(stepData.manip) stepData.value = e.offsetX / e.target.offsetWidth;
+            if (stepData.manip) {
+                if (seq.view == "tall") {
+                    stepData.value = 1.0 - (e.offsetY / e.target.offsetHeight);
+                }
+                else {
+                    stepData.value = e.offsetX / e.target.offsetWidth;
+                }
+            }
         }
     };
-    if(color) {
-        props.style = "background:" + color;
+    var bg = stepData.value > 0.01 ? stepBackgrounds[Math.min(100, Math.round(stepData.value * 100))] : null;
+    if (bg) {
+        props.style = "background-image:" + bg;
     }
     return m("div.step", props, [
         m("div.handle", {
