@@ -14,7 +14,9 @@ function stepComponent(ctrl, seq, stepData, step) {
     var props = {
         key: key,
         ondragover: (e) => {
-            if (e.dataTransfer.getData("seq")) {
+            if (e.dataTransfer.types.indexOf("seq") > -1) {
+                e.dataTransfer.effectAllowed = "move";
+                e.dataTransfer.dropEffect = "move";
                 e.preventDefault();
             }
         },
@@ -72,8 +74,8 @@ function stepComponent(ctrl, seq, stepData, step) {
             draggable: true,
             ondragstart: (e) => {
                 e.dataTransfer.setData("seq", JSON.stringify({seqId: seq.id, step: step}));
-            },
-        }),
+            }
+        })
         //m("input", {
         //    type: "range",
         //    min: 0,
